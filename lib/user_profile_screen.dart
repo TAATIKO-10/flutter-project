@@ -45,3 +45,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       });
     }
   }
+  @override
+  void initState() {
+    super.initState();
+    _usernameController.text = username;
+    _emailController.text = email;
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
