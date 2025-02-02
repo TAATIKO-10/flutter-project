@@ -1,9 +1,15 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
 class BookOrganizerScreen extends StatefulWidget {
   @override
   _BookOrganizerScreenState createState() => _BookOrganizerScreenState();
 }
 
-// For managing the bottom navigation
+class _BookOrganizerScreenState extends State<BookOrganizerScreen> {
+  List<Map<String, dynamic>> books = []; // Empty list initially
+
+  // For managing the bottom navigation
   int _selectedIndex = 0;
 
   // Handle Bottom Navigation Changes
@@ -21,7 +27,8 @@ class BookOrganizerScreen extends StatefulWidget {
       Navigator.pushReplacementNamed(context, '/profile');
     }
   }
-// Confirm Delete Dialog
+
+  // Confirm Delete Dialog
   void _confirmDelete(int index) {
     showDialog(
       context: context,
@@ -48,7 +55,17 @@ class BookOrganizerScreen extends StatefulWidget {
       },
     );
   }
-showDialog(
+
+  // Confirm Edit Dialog
+  void _confirmEdit(int index) {
+    TextEditingController titleController =
+        TextEditingController(text: books[index]['title']);
+    TextEditingController authorController =
+        TextEditingController(text: books[index]['author']);
+    double rating = books[index]['rating'];
+    String status = books[index]['status'];
+
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -124,3 +141,110 @@ showDialog(
       },
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Book Organizer'),
+        centerTitle: true,
+      ),
+      body: _selectedIndex == 0
+          ? ListView.builder(
+              itemCount: books.length,
+              itemBuilder: (context, index) {
+                final book = books[index];
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                  child: ListTile(
+                    title: Text(book['title'] ?? 'Unknown Title'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(book['author'] ?? 'Unknown Author'),
+                        SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Text('Rating: '),
+                            RatingBar.builder(
+                              initialRating:
+                                  book['rating']?.toDouble() ?? 1.0,
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              itemCount: 5,
+                              itemSize: 20,
+                              itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              onRatingUpdate: (newRating) {
+                                setState(() {
+                                  books[index]['rating'] = newRating;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () {
+                            _confirmEdit(index);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            _confirmDelete(index);
+                          },
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/details', arguments: book);
+                    },
+                  ),
+                );
+              },
+            )
+          : Center(
+              child: Text("User Profile Screen"), // Change this to your user profile content
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          try {
+            final newBook = await Navigator.pushNamed(context, '/addEdit')
+                as Map<String, dynamic>?;
+            if (newBook != null && newBook.containsKey('title')) {
+              setState(() {
+                books.add(newBook);
+              });
+            }
+          } catch (e) {
+            print("Error: $e");
+          }
+        },
+        child: Icon(Icons.add),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'User',
+          ),
+        ],
+      ),
+    );
+  }
+}
