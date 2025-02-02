@@ -58,3 +58,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     _emailController.dispose();
     super.dispose();
   }
+ @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('User Profile'),
+        automaticallyImplyLeading: false, // Removes back arrow
+      ),
