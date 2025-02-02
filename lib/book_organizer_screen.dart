@@ -21,3 +21,30 @@ class BookOrganizerScreen extends StatefulWidget {
       Navigator.pushReplacementNamed(context, '/profile');
     }
   }
+// Confirm Delete Dialog
+  void _confirmDelete(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Book'),
+          content: Text('Are you sure you want to delete this book?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  books.removeAt(index);
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
