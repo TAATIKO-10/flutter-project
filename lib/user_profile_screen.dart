@@ -28,3 +28,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       isEditing = false;  // Turn off editing mode
     });
   }
+   // Function to cancel editing
+  void _cancelEdit() {
+    setState(() {
+      isEditing = false;  // Exit editing mode without saving changes
+    });
+  }
