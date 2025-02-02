@@ -34,3 +34,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       isEditing = false;  // Exit editing mode without saving changes
     });
   }
+    // Function to pick a profile image
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);  // Save the picked image
+      });
+    }
+  }
