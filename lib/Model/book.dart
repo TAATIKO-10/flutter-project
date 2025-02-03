@@ -13,3 +13,13 @@ class Book {
     this.status = 'Want to Read',
     this.pdfUrl = '',
   });
+  factory Book.fromMap(Map<String, dynamic> map) {
+    return Book(
+      title: map['title'] ?? 'Unknown Title',
+      author: map['author'] ?? 'Unknown Author',
+      cover: map['cover'] ?? '',
+      rating: (map['rating'] ?? 0.0).toDouble(),
+      status: map['status'] ?? 'Want to Read',
+      pdfUrl: map['pdfUrl'] ?? '',
+    );
+  }
