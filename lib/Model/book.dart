@@ -23,3 +23,14 @@ class Book {
       pdfUrl: map['pdfUrl'] ?? '',
     );
   }
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'author': author,
+      'cover': cover,
+      'rating': rating,
+      'status': status,
+      'pdfUrl': pdfUrl,
+    };
+  }
+}
